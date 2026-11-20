@@ -58,3 +58,22 @@ python margin_vs_indices.py --spx-now 6946 --xlk-csv XLK.csv --xlk-now 150  # in
 * O FRED só tem o `SP500` dos últimos 10 anos (desde 2016-11) e não tem o XLK. O `NASDAQ100` (desde 1986) é o proxy de tecnologia com histórico longo.
 
 Saídas: `data/net_margin_vs_indices_corr.csv` e `data/net_margin_vs_indices_quarterly.csv`.
+
+## Sensibilidade a desalavancagem (`deleveraging_sensitivity.py`)
+
+Quanto o S&P 500 e o XLK se movem quando a margin debt cai de forma abrupta. Preços do Yahoo Finance (`^GSPC` desde 1997 e `XLK` desde 1998, fechamento ajustado por split).
+
+```bash
+python deleveraging_sensitivity.py                            # usa a cotação mais recente do Yahoo
+python deleveraging_sensitivity.py --spx-now 6946 --xlk-now 150
+```
+
+![sensitivity](images/deleveraging_sensitivity.png)
+![timeline](images/deleveraging_timeline.png)
+
+* **Episódios**: meses com margin debt ≥ 10% abaixo da máxima dos 12 meses anteriores, agrupados em episódios. Cada episódio vai da máxima de 12 meses ao fundo. Elasticidade = variação do índice / variação da margin debt na mesma janela.
+* **Regressão mensal**: retorno log do índice contra a variação log da margin debt (todos os meses, meses de queda e meses com queda ≤ −5%), com correlações defasadas.
+* **Cenários**: margin debt −10/−20/−30/−40% a partir do último mês da FINRA, convertidos em variação do índice pela elasticidade dos episódios (ajuste pela origem; o intervalo é o interquartil dos episódios). O resultado é comparado com a queda que o índice já teve desde o fim daquele mês.
+* É co-movimento, não causalidade: o preço lidera a margin debt em cerca de um mês.
+
+Saídas: `data/deleveraging_episodes.csv` e `data/deleveraging_scenarios.csv`. Para incluir o XLK em `margin_vs_indices.py`, exporte a série com `load_yahoo("XLK")` e use `--xlk-csv`.
