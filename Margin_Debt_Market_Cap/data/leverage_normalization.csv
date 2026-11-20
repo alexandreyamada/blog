@@ -1,0 +1,4 @@
+target,net_ratio_pct,central_spx,central_vs_now,central_margin_debt_chg,fast_spx,fast_vs_now,fast_margin_debt_chg,debt frozen_spx,debt frozen_vs_now,debt frozen_margin_debt_chg
+1997-2026 mean,0.3437,4239.6172,-0.3896,-0.6041,5172.5251,-0.2553,-0.5252,26935.6567,2.8779,0.0000
+2013-2026 mean,0.7513,5330.8744,-0.2325,-0.4068,6067.7336,-0.1264,-0.3299,12321.1997,0.7739,0.0000
+Last 10y mean,0.8238,5586.4915,-0.1957,-0.3605,6260.3396,-0.0987,-0.2879,11237.3494,0.6178,0.0000

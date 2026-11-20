@@ -96,3 +96,20 @@ python leading_indicators.py --spx-now 6946
 * **Ressalva**: o NFCI e o STLFSI são revisados com o tempo, e a versão disponível em tempo real teria desempenho um pouco pior.
 
 Saídas: `data/leading_indicators_scores.csv` e `data/leading_indicators_monthly.csv`.
+
+## Nível do S&P para a alavancagem voltar à média (`leverage_normalization.py`)
+
+```bash
+python leverage_normalization.py --spx-now 6946
+```
+
+![normalization](images/leverage_normalization.png)
+
+* **Dívida parada:** se só o S&P cair, a alavancagem líquida **sobe**, porque o market cap cai e a dívida não. Ela só normaliza com desalavancagem.
+* **Trajetória conjunta:** o S&P varia `p` a partir do último fim de mês da FINRA. Os débitos variam `a·p` e os saldos credores `c·p`, com elasticidades estimadas nos 10 episódios desde 1998.
+  * Cenário **central:** ajuste pela origem (débitos −1,37% e saldos credores −0,06% por −1% do S&P).
+  * Cenário **rápido:** medianas dos episódios (débitos −1,65% e saldos credores +0,50% por −1% do S&P).
+  * Resolve-se `(D − C) / M = média` para encontrar `p`.
+* **Médias de referência:** 1997–2026, 2013–2026 e últimos 10 anos. O colchão de caixa (saldos credores / débitos) caiu de cerca de 1,0x (2002–2012) para cerca de 0,3x, então a média da amostra inteira é uma âncora viciada.
+
+Saída: `data/leverage_normalization.csv`.
