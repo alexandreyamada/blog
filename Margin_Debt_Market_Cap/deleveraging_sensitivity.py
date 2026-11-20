@@ -31,7 +31,7 @@ import requests
 
 from margin_debt_market_cap import load_finra
 
-YAHOO = "https://query1.finance.yahoo.com/v8/finance/chart/{}?period1=852076800&period2={}&interval=1d"
+YAHOO = "https://query1.finance.yahoo.com/v8/finance/chart/{}?period1={}&period2={}&interval=1d"
 TICKERS = {"S&P 500": "^GSPC", "XLK": "XLK"}
 DD_THRESHOLD = -0.10
 SCENARIOS = [-0.10, -0.20, -0.30, -0.40]
@@ -43,9 +43,10 @@ BAND = "#f0efec"
 
 
 # --------------------------------------------------------------------------- data
-def load_yahoo(ticker: str) -> tuple[pd.Series, float]:
+def load_yahoo(ticker: str, start: str = "1997-01-01") -> tuple[pd.Series, float]:
     """Daily split-adjusted closes and the latest quote."""
-    url = YAHOO.format(requests.utils.quote(ticker), int(pd.Timestamp.now().timestamp()) + 86400)
+    url = YAHOO.format(requests.utils.quote(ticker), int(pd.Timestamp(start).timestamp()),
+                       int(pd.Timestamp.now().timestamp()) + 86400)
     r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=60)
     r.raise_for_status()
     res = r.json()["chart"]["result"][0]

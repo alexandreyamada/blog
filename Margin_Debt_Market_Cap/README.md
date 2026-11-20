@@ -77,3 +77,22 @@ python deleveraging_sensitivity.py --spx-now 6946 --xlk-now 150
 * É co-movimento, não causalidade: o preço lidera a margin debt em cerca de um mês.
 
 Saídas: `data/deleveraging_episodes.csv` e `data/deleveraging_scenarios.csv`. Para incluir o XLK em `margin_vs_indices.py`, exporte a série com `load_yahoo("XLK")` e use `--xlk-csv`.
+
+## Indicadores antecedentes (`leading_indicators.py`)
+
+Quais indicadores antecipam o início de uma desalavancagem, definido como a margin debt chegar a 10% ou mais abaixo da máxima de 12 meses dentro de 3 ou 6 meses.
+
+```bash
+python leading_indicators.py --spx-now 6946
+```
+
+![auc](images/leading_indicators_auc.png)
+![composite](images/leading_indicators_composite.png)
+
+* **Candidatos**: condições financeiras (NFCI, STLFSI), volatilidade (VIX, VIX/VIX3M), crédito (spread Baa–10y), tendência do S&P (200 dias, retorno de 1 mês, distância da máxima de 52 semanas), juros (Fed funds, 2 anos, inclinação da curva), medidas da própria margem (crescimento anual, colchão de caixa) e XLK vs S&P.
+* **Sem olhar o futuro**: cada indicador vira um percentil calculado só com o histórico disponível até aquele mês (mínimo de 36 meses).
+* **Métricas**: AUC, taxa de acerto quando o percentil está em 80% ou mais, e antecedência em cada um dos 10 inícios de episódio.
+* **Composto**: definido de antemão, com um indicador por família — NFCI, VIX, variação de 6 meses do spread Baa e S&P vs média de 200 dias.
+* **Ressalva**: o NFCI e o STLFSI são revisados com o tempo, e a versão disponível em tempo real teria desempenho um pouco pior.
+
+Saídas: `data/leading_indicators_scores.csv` e `data/leading_indicators_monthly.csv`.
