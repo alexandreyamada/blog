@@ -39,3 +39,22 @@ Nenhuma chave de API é necessária (usa o endpoint `fredgraph.csv` do FRED e o 
 ## Saída
 
 `data/margin_debt_market_cap.csv`: uma linha por mês, com as colunas `margin_debt`, `free_credit_total`, `margin_debt_yoy_pct`, `market_cap`, `mcap_source` (`Z.1` ou `nowcast_sp500`), `margin_debt_to_mcap_pct` e `net_margin_debt_to_mcap_pct`.
+
+## Correlação com índices (`margin_vs_indices.py`)
+
+Correlação de *net margin debt / market cap* com S&P 500 e NASDAQ-100 (FRED), medida no fim de cada trimestre. Também aceita o XLK por CSV.
+
+```bash
+python margin_vs_indices.py --spx-now 6946                                  # S&P atual para a estimativa de hoje
+python margin_vs_indices.py --spx-now 6946 --xlk-csv XLK.csv --xlk-now 150  # inclui XLK (CSV com Date + Close)
+```
+
+![timeseries](images/net_margin_vs_indices_timeseries.png)
+![forward](images/net_margin_vs_indices_forward.png)
+
+* **Variação**: correlação da variação trimestral da razão líquida com o retorno trimestral do índice.
+* **Retorno futuro**: correlação da razão líquida em *t* com o retorno de *t* a *t+h*, para h = 3, 6, 12, 24 e 36 meses. As janelas se sobrepõem, então a amostra efetiva é de aproximadamente trimestres / h.
+* **Hoje**: saldos da FINRA do último mês divulgado sobre o market cap do Z.1 corrigido pelo nível do S&P passado em `--spx-now`.
+* O FRED só tem o `SP500` dos últimos 10 anos (desde 2016-11) e não tem o XLK. O `NASDAQ100` (desde 1986) é o proxy de tecnologia com histórico longo.
+
+Saídas: `data/net_margin_vs_indices_corr.csv` e `data/net_margin_vs_indices_quarterly.csv`.
